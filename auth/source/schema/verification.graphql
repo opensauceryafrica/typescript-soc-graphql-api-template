@@ -1,0 +1,16 @@
+input EmailVerificationInput {
+    email: String!
+}
+
+input EmailConfirmationInput {
+    email: String!
+    code: String!
+}
+
+input PhoneVerificationInput {
+    phone: String!
+}
+
+input PhoneConfirmationInput {
+    code: String!
+}

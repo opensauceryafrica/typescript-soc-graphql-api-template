@@ -1,0 +1,26 @@
+type Error {
+    message: String!
+    code: String!
+    status: Int!
+}
+
+type Base {
+    "Base is a type describing an arbitrary set of keys."
+    exist: Boolean
+}
+
+type History {
+    act: String!
+    by: String!
+    at: String!
+}
+
+input AttachmentInput {
+    name: String!
+    url: String!
+}
+
+type Attachment {
+    name: String!
+    url: String!
+}

@@ -1,0 +1,7 @@
+type Query {
+    ping: Respond!
+}
+
+type Mutation {
+    pong(input: Any): Respond!
+}

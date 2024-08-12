@@ -1,0 +1,11 @@
+extend type Mutation {
+    signupStepOne(input: StepOneInput!): RespondWithUser!
+    signupStepTwo(input: StepTwoInput!): RespondWithUser!
+    signupStepThree(input: StepThreeInput!): RespondWithAddress!
+    setPasscode(input: SetPasscodeInput!): RespondWithUser!
+    startSession(input: StartSessionInput!): RespondWithUser!
+}
+
+extend type Query {
+    signin(input: SigninInput!): RespondWithUser!
+}

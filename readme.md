@@ -1,43 +1,29 @@
-# Typescript GraphQL API Template
 
-GraphQL for the everyday human.
+# bysect 
 
-## Running
+Wallet as a Service infrastructure for cryptocurrencies.
 
-To setup this service for local or remote deployment on a computer environment, below are the steps you need to follow.
+## Architecture
 
-Clone the repository
+Bysect is built with Typescript but uses Golang's idea of a multi-module workspaces setup and implements a service oriented approach for resource sharing and service distribution - `one codebase, multiple servers`.
 
-```shell
-git clone https://github.com/opensauceryafrica/typescript-graphql-api-template.git .
+Who needs a queue when you can just `tsc`? Should we need a queue? Then it definitely won't be for cross service communication.
 
-```
+Known services in this design are:
 
-Move into the directory and install the necessary dependencies
+- [X] auth - authentication, users, kyc, etc
+- [X] chain - wallet, cryptocurrency, blockchain, data, automation etc
+- [X] event - txs, confirmations, validations, etc
+- [X] connect - third party communication
+- [X] signal - events, alerts, broadcasts, emails, sms, in-app, push, etc
 
-```shell
-cd typescript-graphql-api-template
-yarn install
-```
+## Spinning up
 
-> Note that the assumption is that you already have a recent version of node (16+) install on your computer
+For each service, all you need is to add the requried environment variables into an `.env` file and execute `yarn dev`.
 
-Now that you've installed the dependencies...you can build the code and run
+You can also execute a specific service (module) from within the main workspace using `make -B <service-name>`. For example `make -B auth` will execute the auth service.
 
-```shell
-yarn build:start
-```
+## Resources on gql
 
-If you would like to keep your code running in an iteration mode such that your changes reflect as you save, then use the follow command instead to run in development mode
-
-```shell
-yarn dev
-```
-
-## Deployment
-
-### Render Cloud
-
-To deploy this service on Render, you need to create a Render web service and select a Docker environment as your deployment environment as well as set the required env variables so they can become available to the Docker context. Check the `.env.example` file for the list of required env variables. Connect the right GitHub repository to the Render service and set the branch to `main` and the path to `./` and then proceed to deploy.
-
-In addition, a GitHub workflows has been setup with the name `render.dev.yaml` and `render.prod.yaml` to automatically deploy all following changes created either by a push or pull request.
+- [intro to graphql with typescript and apollo server](https://www.apollographql.com/tutorials/intro-typescript/01-course-overview-and-setup)
+- [federation with typescript and apollo server](https://www.apollographql.com/tutorials/federation-typescript/01-course-overview-and-setup)

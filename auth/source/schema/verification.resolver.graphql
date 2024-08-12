@@ -1,0 +1,6 @@
+extend type Query {
+    emailVerification(input: EmailVerificationInput!): Respond!
+    emailConfirmation(input: EmailConfirmationInput!): Respond!
+    phoneVerification(input: PhoneVerificationInput!): Respond!
+    phoneConfirmation(input: PhoneConfirmationInput!): Respond!
+}

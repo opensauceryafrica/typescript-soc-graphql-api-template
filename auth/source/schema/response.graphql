@@ -1,0 +1,55 @@
+type Response {
+    message: String!
+}
+
+type Pagination {
+    page: Int!
+    limit: Int!
+    pages: Int!
+}
+
+type ResponseWithBase {
+    message: String!
+    data: Base
+    token: String
+}
+
+type ResponseWithAddress {
+    message: String!
+    data: Address
+    token: String!
+}
+
+type ResponseWithUser {
+    message: String!
+    data: User
+    token: String!
+}
+
+type ResponseWithUsers {
+    message: String!
+    data: [User]
+    token: String
+    "only returned when paginate is true"
+    pagination: Pagination
+}
+
+# type ResponseWithTransaction {
+#     message: String!
+#     data: Transaction
+# }
+
+# type ResponseWithTransactions {
+#     message: String!
+#     data: [Transaction]
+#     "only returned when paginate is true"
+#     pagination: Pagination
+# }
+
+union Respond = Error | Response
+union RespondWithBase = Error | ResponseWithBase
+union RespondWithAddress = Error | ResponseWithAddress
+union RespondWithUser = Error | ResponseWithUser
+union RespondWithUsers = Error | ResponseWithUsers
+# union RespondWithTransaction = Error | ResponseWithTransaction
+# union RespondWithTransactions = Error | ResponseWithTransactions
