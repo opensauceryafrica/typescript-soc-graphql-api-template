@@ -1,2 +1,2 @@
-auth:
-	cd auth && yarn dev
+dev:
+	yarn dev

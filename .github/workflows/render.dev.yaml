@@ -1,7 +1,7 @@
 name: 'Deploy Docker Image to Render' # set whatever name you want to your github job
 on:
   push: # set the events you would like to trigger this job
-    branches: [development]
+    branches: []
 
 jobs:
   deployment:

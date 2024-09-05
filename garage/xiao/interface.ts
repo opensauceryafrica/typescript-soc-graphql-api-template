@@ -1,10 +1,14 @@
 import { SQLMaps, SQLOperator, XiaoPool, XiaoTx } from './types';
-import { mapsToIQuery, mapsToSQuery, mapsToWQuery } from './generator';
+import { mapsToIQuery, mapsToLQuery, mapsToOQuery, mapsToSQuery, mapsToWQuery } from './generator';
 
 /**
  * Xiao is a base class for postgres data models
  *
  * xiao supports any driver that implements the xiao compatible interfaces. e.g. pg
+ *
+ * xiao uses the lowercase value of your class name as the table name by default but you can override it by setting the tableName property
+ *
+ * xiao provides a preloaders property to define a limited set of columns to return when fetching data with preload set to true. it defaults to an empty array and returns all columns
  */
 export class Xiao<T> {
     /**
@@ -56,7 +60,7 @@ export class Xiao<T> {
             `${SQLOperator.SELECT} ${SQLOperator.EXISTS}(${SQLOperator.SELECT} 1 ${SQLOperator.FROM} ${this.tableName} ${SQLOperator.WHERE} ${key} = $1)`,
             [value],
         );
-        return rows[0].exists;
+        return rows[0]?.exists ?? false;
     }
 
     /**
@@ -175,9 +179,11 @@ export class Xiao<T> {
      */
     async findAllByMap<K = T>(m: SQLMaps, preload: boolean = false): Promise<T[] | K[]> {
         const { query, args } = mapsToWQuery(m);
+        const oquery = mapsToOQuery(m);
+        const lquery = mapsToLQuery(m);
         const selectColumns = preload ? '*' : this.preloaders.join(', ');
         const { rows } = await this.pool.query(
-            `${SQLOperator.SELECT} ${selectColumns} ${SQLOperator.FROM} ${this.tableName} ${SQLOperator.WHERE} ${query}`,
+            `${SQLOperator.SELECT} ${selectColumns} ${SQLOperator.FROM} ${this.tableName} ${SQLOperator.WHERE} ${query} ${oquery} ${lquery}`,
             args,
         );
         return rows as T[] | K[];
@@ -207,9 +213,11 @@ export class Xiao<T> {
      */
     async findAllAndLockByMap<K = T>(client: XiaoTx, m: SQLMaps, preload: boolean = false): Promise<T[] | K[]> {
         const { query, args } = mapsToWQuery(m);
+        const oquery = mapsToOQuery(m);
+        const lquery = mapsToLQuery(m);
         const selectColumns = preload ? '*' : this.preloaders.join(', ');
         const { rows } = await client.query(
-            `${SQLOperator.SELECT} ${selectColumns} ${SQLOperator.FROM} ${this.tableName} ${SQLOperator.WHERE} ${query} ${SQLOperator.FOR} ${SQLOperator.UPDATE}`,
+            `${SQLOperator.SELECT} ${selectColumns} ${SQLOperator.FROM} ${this.tableName} ${SQLOperator.WHERE} ${query} ${oquery} ${lquery} ${SQLOperator.FOR} ${SQLOperator.UPDATE}`,
             args,
         );
         return rows as T[] | K[];
@@ -220,11 +228,11 @@ export class Xiao<T> {
      * @param m is a map of conditions to check
      * @returns the updated record
      */
-    async updateByMap<K = T>(m: SQLMaps): Promise<T | K | void> {
+    async updateByMap<K = T>(m: SQLMaps): Promise<T[] | K[] | void> {
         const { query, args } = mapsToSQuery(m);
         if (query.includes(SQLOperator.RETURNING)) {
             const { rows } = await this.pool.query(`${SQLOperator.UPDATE} ${this.tableName} ${query}`, args);
-            return rows[0] as T | K;
+            return rows as T[] | K[];
         } else {
             await this.pool.query(`${SQLOperator.UPDATE} ${this.tableName} ${query}`, args);
         }
@@ -236,11 +244,11 @@ export class Xiao<T> {
      * @param m is a map of conditions to check
      * @returns the updated record
      */
-    async updateByMapTx<K = T>(client: XiaoTx, m: SQLMaps): Promise<T | K | void> {
+    async updateByMapTx<K = T>(client: XiaoTx, m: SQLMaps): Promise<T[] | K[] | void> {
         const { query, args } = mapsToSQuery(m);
         if (query.includes(SQLOperator.RETURNING)) {
             const { rows } = await client.query(`${SQLOperator.UPDATE} ${this.tableName} ${query}`, args);
-            return rows[0] as T | K;
+            return rows as T[] | K[];
         } else {
             await client.query(`${SQLOperator.UPDATE} ${this.tableName} ${query}`, args);
         }
@@ -254,12 +262,12 @@ export class Xiao<T> {
     async countByMap(m: SQLMaps): Promise<number> {
         const { query, args } = mapsToWQuery(m);
         const { rows } = await this.pool.query(
-            `${SQLOperator.SELECT} ${SQLOperator.COUNT(['*'])} ${SQLOperator.FROM} ${this.tableName} ${
+            `${SQLOperator.SELECT} ${SQLOperator.COUNT('*')} ${SQLOperator.FROM} ${this.tableName} ${
                 SQLOperator.FROM
             } ${query}`,
             args,
         );
-        return parseInt(rows[0].count, 10);
+        return parseInt(rows[0]?.count ?? 0, 10);
     }
 
     /**

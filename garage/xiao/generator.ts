@@ -262,3 +262,20 @@ export function mapsToOQuery(m: SQLMaps): string {
 
     return query;
 }
+
+// MapsToLQuery adds LIMIT and OFFSET clauses to the SQL query based on the Pagination settings
+export function mapsToLQuery(m: SQLMaps): string {
+    let query = '';
+
+    // Add LIMIT clause if limit is non-zero
+    if (m.pagination?.limit) {
+        query += ` LIMIT ${m.pagination.limit}`;
+    }
+
+    // Add OFFSET clause (can be zero)
+    if (m.pagination?.offset !== undefined) {
+        query += ` OFFSET ${m.pagination.offset}`;
+    }
+
+    return query;
+}

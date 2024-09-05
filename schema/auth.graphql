@@ -1,0 +1,36 @@
+input StepOneInput {
+    email: String!
+    country: String!
+    referralCode: String
+}
+
+input StepTwoInput {
+    firstname: String!
+    lastname: String!
+    companyName: String
+    # gender: EGender!
+    # dob: DateTime!
+}
+
+input StepThreeInput {
+    state: String!
+    city: String!
+    houseNumber: String
+    street: String!
+    zip: String!
+}
+
+input SigninInput {
+    email: String!
+    code: String!
+}
+
+input SetPasscodeInput {
+    passcode: String!
+    pastcode: String
+}
+
+input StartSessionInput {
+    email: String!
+    passcode: String!
+}

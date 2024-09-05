@@ -1,0 +1,40 @@
+"the user type"
+type User @key(fields: "id") {
+    id: ID!
+    firstname: String
+    middlename: String
+    lastname: String
+    email: String!
+    phone: String
+    phoneCode: String
+    gender: String
+    country: String
+    username: String
+    tier: ETier
+    dob: DateTime
+    passcode: String
+    referral: String
+    avatar: String
+    "defines whether or not the user is an internal team member"
+    internal: Boolean
+    role: ERole
+    status: EUserStatus
+    address: Address @external
+    createdAt: DateTime
+    updatedAt: DateTime
+}
+
+"the address type"
+type Address @key(fields: "userId") {
+    id: ID!
+    userId: ID!
+    user: User! @external
+    state: String!
+    city: String!
+    houseNumber: String
+    street: String!
+    zip: String!
+    verified: Boolean!
+    createdAt: DateTime
+    updatedAt: DateTime
+}

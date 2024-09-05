@@ -73,7 +73,7 @@ export const SQLOperator = {
     COMMIT: 'COMMIT' as SQLOperator,
     ROLLBACK: 'ROLLBACK' as SQLOperator,
     BEGIN: 'BEGIN' as SQLOperator,
-    COUNT: (columns: string[]) => `COUNT(${columns.join(', ')})` as SQLOperator,
+    COUNT: (...columns: string[]) => `COUNT(${columns.join(', ')})` as SQLOperator,
     SET: 'SET' as SQLOperator,
     PLUS: '+' as SQLOperator,
     MINUS: '-' as SQLOperator,
@@ -91,6 +91,12 @@ export interface SQLMap {
     comparisonOperator: SQLOperator;
 }
 
+// Pagination represents the pagination for the SQL query
+export interface Pagination {
+    limit: number;
+    offset: number;
+}
+
 // SQLMaps represents a collection of SQL conditions for various SQL clauses
 export interface SQLMaps {
     iMaps?: SQLMap[]; // INSERT clauses
@@ -103,6 +109,7 @@ export interface SQLMaps {
     args?: any[]; // Arguments for the SQL query
     wJoinOperator?: SQLOperator; // Join operator for WHERE clauses
     jJoinOperator?: SQLOperator; // Join operator for JOIN clauses
+    pagination?: Pagination; // Pagination for the SQL query
 }
 
 // SQLQueryResult represents the result of generating an SQL query
